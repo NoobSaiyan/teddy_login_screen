@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,6 +30,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String pass = 'admin';
+  String animationType = 'idle';
+  final passwordController = TextEditingController();
+  final textFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    textFocusNode.addListener(() {
+      if (textFocusNode.hasFocus) {
+        setState(() {
+          animationType = 'test';
+        });
+      } else {
+        setState(() {
+          animationType = 'idle';
+        });
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,9 +61,19 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         Center(
           child: Container(
-            color: Colors.green,
             height: 200,
             width: 200,
+            child: CircleAvatar(
+              backgroundColor: Colors.white70,
+              child: ClipOval(
+                child: FlareActor(
+                  'assets/teddy_test.flr',
+                  alignment: Alignment.center,
+                  fit: BoxFit.contain,
+                  animation: animationType,
+                ),
+              ),
+            ),
           ),
         ),
         SizedBox(
@@ -73,10 +105,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Password',
                   contentPadding: EdgeInsets.all(20),
                 ),
+                controller: passwordController,
+                focusNode: textFocusNode,
               ),
             ],
           ),
         ),
+
+        //button
         Container(
           width: double.infinity,
           height: 70,
@@ -94,7 +130,19 @@ class _LoginScreenState extends State<LoginScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            onPressed: () {},
+            onPressed: () {
+              if (passwordController.text.compareTo(pass) == 0) {
+                print('success');
+                setState(() {
+                  animationType = 'success';
+                });
+              } else {
+                print('fail');
+                setState(() {
+                  animationType = 'fail';
+                });
+              }
+            },
           ),
         )
       ],
